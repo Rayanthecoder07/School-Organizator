@@ -1,64 +1,66 @@
-let session = {};
+console.log("Background script is running");
+chrome.runtime.onInstalled.addListener(() => {
+   console.log("hi!")
+  });
+let isWorking = true;
 let intervalIndex = 0;
 let remainingTime = 0;
-let isWorking = true; // Start with work interval
+let intervals = [];
 
-chrome.runtime.onConnect.addListener((port) => {
-  port.onMessage.addListener((msg) => {
-    if (msg.status === "start") {
-      startCountdown();
+function startTimer() {
+  updateTimerDisplay();
+
+  const timerInterval = setInterval(() => {
+    remainingTime--;
+
+    if (remainingTime <= 0) {
+      intervalIndex = (intervalIndex + 1) % intervals.length;
+      isWorking = !isWorking;
+      remainingTime = intervals[intervalIndex];
+
+      updateTimerDisplay();
+    } else {
+      updateTimerDisplay();
     }
-  });
-});
+  }, 1000);
+}
 
-chrome.storage.local.get(["currentSession"], (result) => {
-  session = result.currentSession;
+function updateTimerDisplay() {
+  const formattedTime = formatTime(remainingTime);
+  const status = isWorking ? "Work Time" : "Break Time";
 
-  if (session && session.timeConfiguration) {
-    const { workMin, breakTotalMin, numBreaks } = session.timeConfiguration;
+  // Send a message to the content script (WorkPage.js) with the updated time and status
+  chrome.runtime.sendMessage({ status, formattedTime });
+}
 
-    const workIntervalDuration = Math.floor(workMin / (numBreaks + 1));
-    const breakIntervalDuration = Math.floor(breakTotalMin / numBreaks);
+function formatTime(seconds) {
+  const formattedMinutes = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const formattedSeconds = (seconds % 60).toString().padStart(2, "0");
+  return `${formattedMinutes}:${formattedSeconds}`;
+}
 
-    const intervals = [];
-    for (let i = 0; i < numBreaks; i++) {
-      intervals.push(workIntervalDuration, breakIntervalDuration);
-    }
-    intervals.push(workIntervalDuration);
+// Listen for messages from the content script (WorkPage.js)
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.status === "start_time") {
+    // Handle the request to start the timer here
+    chrome.storage.local.get(["currentSession"], (result) => {
+      const session = result.currentSession;
 
-    remainingTime = intervals[intervalIndex] * 60;
+      if (session && session.timeConfiguration) {
+        const { workMin, breakTotalMin, numBreaks } = session.timeConfiguration;
 
-    function startCountdown() {
-      isWorking = true; // Start with work interval
-      remainingTime = intervals[intervalIndex] * 60;
-      sendTimeToContent();
-      updateCountdown();
-    }
+        const workIntervalDuration = Math.floor(workMin / (numBreaks + 1));
+        const breakIntervalDuration = Math.floor(breakTotalMin / numBreaks);
 
-    function updateCountdown() {
-      if (remainingTime <= 0) {
-        intervalIndex = (intervalIndex + 1) % intervals.length;
-        isWorking = !isWorking;
-        remainingTime = intervals[intervalIndex] * 60;
-        sendTimeToContent();
-      } else {
-        remainingTime--;
-        sendTimeToContent();
+        for (let i = 0; i < numBreaks; i++) {
+          intervals.push(workIntervalDuration * 60, breakIntervalDuration * 60);
+        }
+        intervals.push(workIntervalDuration * 60);
+
+        remainingTime = intervals[0];
+        startTimer();
       }
-
-      setTimeout(updateCountdown, 1000);
-    }
-
-    function sendTimeToContent() {
-      const formattedTime = formatTime(remainingTime);
-      chrome.runtime.sendMessage({ status: "time update", time: formattedTime, isWorking });
-    }
-
-    function formatTime(seconds) {
-      const minutes = Math.floor(seconds / 60);
-      const formattedMinutes = minutes.toString().padStart(2, "0");
-      const formattedSeconds = (seconds % 60).toString().padStart(2, "0");
-      return { minutes: formattedMinutes, seconds: formattedSeconds };
-    }
+    });
   }
+  console.log(message.greeting)
 });

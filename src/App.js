@@ -8,7 +8,6 @@ import Settings from './components/pages/Settings';
 import WorkPage from './components/pages/WorkPage';
 import SessionsPage from './components/pages/SessionsPage';
 
-
 function App() {
 
   return (

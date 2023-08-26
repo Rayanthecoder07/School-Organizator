@@ -25,13 +25,13 @@
     "service_worker": "service_worker.js",
     "type": "module"
   },
-  "web_accessible_resources": [
+  "content_scripts": [
     {
-      "resources": [
-        "*"
-      ],
       "matches": [
         "<all_urls>"
+      ],
+      "js": [
+        "content-script/WorkPage.js"
       ]
     }
   ]
