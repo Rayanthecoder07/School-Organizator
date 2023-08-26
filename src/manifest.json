@@ -4,9 +4,7 @@
   "version": "1.0",
   "description": "This will organize your school work",
   "permissions": [
-    "storage",
-    "activeTab",
-    "alarms"
+    "storage"
   ],
   "icons": {
     "16": "/images/16.png",
@@ -20,19 +18,5 @@
       "48": "/images/48.png",
       "128": "/images/128.png"
     }
-  },
-  "background": {
-    "service_worker": "service_worker.js",
-    "type": "module"
-  },
-  "web_accessible_resources": [
-    {
-      "resources": [
-        "*"
-      ],
-      "matches": [
-        "<all_urls>"
-      ]
-    }
-  ]
+  }
 }
