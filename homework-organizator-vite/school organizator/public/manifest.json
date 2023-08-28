@@ -1,0 +1,24 @@
+{
+    "name": "School Organizator",
+    "description": "Organize your school work!",
+    "version": "0.0.1",
+    "manifest_version": 3,
+    "icons": {
+        "16": "./images/16.png",
+        "48": "./images/48.png",
+        "128": "./images/128.png"
+    },
+    "action": {
+        "default_popup": "index.html",
+        "default_icon": {
+            "16": "./images/16.png",
+            "48": "./images/48.png",
+            "128": "./images/128.png"
+        }
+    },
+    "permissions": [
+        "storage",
+        "tabs"
+    ],
+    "homepage_url": "https://twins4soft.com"
+}

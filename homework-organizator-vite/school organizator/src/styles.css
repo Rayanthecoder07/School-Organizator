@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.draggable {
+    transition: cursor 0.3s;
+}
+
+.dragging {
+    cursor: grabbing;
+}
