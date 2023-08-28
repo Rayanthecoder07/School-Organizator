@@ -40,7 +40,7 @@ function startTimer() {
           chrome.notifications.create({
             title: "Break Time's Over",
             message: "Time to get back to work!",
-            iconUrl: "/images/48.png",
+            iconUrl: "/images/48.png",     
             type: "basic"
           });
         }
