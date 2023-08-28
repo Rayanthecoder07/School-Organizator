@@ -9,7 +9,7 @@ function CreateHomework() {
     const [isSaved, setIsSaved] = useState(false);
 
     const createHomework = () => {
-        setHomeworkList([...homeworkList, { subject: "", resources: ["", "", ""], name: "", priority: 0 }]);
+        setHomeworkList([...homeworkList, { subject: "", resources: ["", "", ""], name: "", priority: 0,completed:false }]);
     };
 
     const canSave = () => {

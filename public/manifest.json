@@ -6,7 +6,8 @@
   "permissions": [
     "storage",
     "activeTab",
-    "alarms"
+    "alarms",
+    "notifications"
   ],
   "icons": {
     "16": "/images/16.png",
@@ -24,15 +25,5 @@
   "background": {
     "service_worker": "service_worker.js",
     "type": "module"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "content-script/WorkPage.js"
-      ]
-    }
-  ]
+  }
 }
